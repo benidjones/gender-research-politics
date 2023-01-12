@@ -5,7 +5,6 @@ library(readr)
 library(DT)
 library(shinythemes)
 library(stringr)
-library(kableExtra)
 library(shinyWidgets)
 
 # dataset
@@ -108,20 +107,11 @@ ui <- fluidPage(
           "Here, summary data from the original paper is available in raw format.", 
           h1(strong("Documentation"), style = "font-size:30px;"), 
           "Documentation on coding decisions is as follows: ", 
-          kable(code_doc) %>%
-            kable_styling() %>%
-            column_spec(1, bold = T, border_right = T) %>%
-            HTML(), 
+          tableOutput("code_doc"), 
           "Documentation for the article data is as follows: ", 
-          kable(articles_doc) %>%
-            kable_styling() %>%
-            column_spec(1, bold=T, border_right = T) %>%
-            HTML(), 
+          tableOutput("articles_doc"), 
           "Documentation for the summary data is as follows: ", 
-          kable(summ_doc) %>%
-            kable_styling() %>%
-            column_spec(1, bold=T, border_right = T) %>%
-            HTML(), 
+          tableOutput("summ_doc"), 
           #mainPanel(textOutput("citation"))
   ),
   # tab for clean data
@@ -311,6 +301,10 @@ server <- function(input, output, session) {
     }
   )
   
+  ### Static tables in the app
+  output$code_doc = renderTable(code_doc)
+  output$articles_doc = renderTable(articles_doc)
+  output$summ_doc = renderTable(summ_doc)
   
   ### All of the static text in the app follows!
   
