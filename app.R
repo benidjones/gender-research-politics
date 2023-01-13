@@ -58,8 +58,13 @@ findByTitle = function(search_string, .data) {
     tolower() %>%
     str_replace_all("[^[:alnum:]]", "")
   
-  find_data = .data %>%
-    filter(str_detect(search, searcher))
+  find_data = tryCatch({
+    .data %>%
+      filter(str_detect(search, searcher))
+    }, 
+    error = function(e) {
+      return(data.frame())
+    })
   
   # if no result is found, return NA
   if (nrow(find_data) == 0) return(NA)
@@ -282,10 +287,7 @@ server <- function(input, output, session) {
                  "Journal", "Volume", "Issue", "Pages")) %>%
         t() 
       
-      return(kable(article_data) %>%
-               kable_styling() %>%
-               column_spec(1, bold=T, border_right = T) %>%
-               HTML())
+      return(renderTable(article_data))
     }
     
     return("Search failed. Please try again later. ")
